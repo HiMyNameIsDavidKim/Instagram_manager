@@ -7,9 +7,8 @@ from bs4 import BeautifulSoup
 
 class InstaManager(object):
     def __init__(self):
-        global url_chr, browser, url_login
-        url_chr = r'../lib/chromedriver.exe'
-        browser = webdriver.Chrome(url_chr)
+        global browser, url_login
+        browser = webdriver.Chrome()
         url_login = r'https://www.instagram.com/accounts/login/'
         self.id = ''
         self.pw = ''
@@ -17,15 +16,17 @@ class InstaManager(object):
     def process(self):
         self.login()
         self.laters()
+        browser.quit()
 
     def id_n_pw(self):
-        self.id = input('please input ID : ')
-        self.pw = input('please input PW : ')
+        file = open(r"/Users/davidkim/security/insta_nir.txt", "r")
+        data = file.read()
+        self.id, self.pw = tuple(data.split('\n'))
         return self.id, self.pw
 
     def login(self):
         browser.get(url_login)
-        time.sleep(1)
+        browser.implicitly_wait(10)
 
         id, pw = self.id_n_pw()
         click = browser.find_elements(By.TAG_NAME, 'input')
