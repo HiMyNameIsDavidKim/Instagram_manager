@@ -7,20 +7,22 @@ from bs4 import BeautifulSoup
 
 
 class InstaManager(object):
-    def __init__(self, TAGS=False, INFL=False, STORY=False):
-        global browser, url_login, url_tags, url_infl, url_story, \
+    def __init__(self, TAGS=False, INFL=False, STORY=False, FEED=False):
+        global browser, url_login, url_tags, url_infl, url_story, url_feed, \
             file_idpw, file_tags, file_infl
         browser = webdriver.Chrome()
         url_login = 'https://www.instagram.com/accounts/login/'
         url_tags = "https://www.instagram.com/explore/tags/"
         url_infl = "https://www.instagram.com/"
         url_story = 'https://www.instagram.com/'
+        url_feed = 'https://www.instagram.com/'
         file_idpw = r"/Users/davidkim/security/insta_nir.txt"
         file_tags = r"/Users/davidkim/security/insta_tags.txt"
         file_infl = r"/Users/davidkim/security/insta_infl.txt"
         self.TAGS = TAGS
         self.INFL = INFL
         self.STORY = STORY
+        self.FEED = FEED
 
     def process(self):
         self.login()
@@ -31,6 +33,8 @@ class InstaManager(object):
             self.follow_by_infl()
         if self.STORY:
             self.like_stories()
+        if self.FEED:
+            self.like_feeds()
         self.logout()
         browser.quit()
 
@@ -143,13 +147,45 @@ class InstaManager(object):
             next_story = browser.find_element(By.CLASS_NAME, '_9zm2')
             next_story.click()
             time.sleep(1)
+            print(f'like_stories count : {_ + 1}')
 
         quit_story = browser.find_elements(By.CLASS_NAME, '_abl-')[-1]
         quit_story.click()
         time.sleep(3)
         print('### Like stories is completed. ###')
 
+    def like_feeds(self):
+        print('### Now start to like feeds. ###')
+        browser.get(url_feed)
+        time.sleep(3)
+
+        limit = 0
+        for _ in range(100):
+            one_btn = browser.find_elements(By.CLASS_NAME, '_aamw')[0]
+
+            color = one_btn.find_element(By.CLASS_NAME, '_abm0')
+            color = color.find_element(By.CLASS_NAME, '_ab6-')
+            color = color.value_of_css_property('color')
+
+            if color == 'rgba(142, 142, 142, 1)':
+                like_btn = one_btn.find_element(By.CLASS_NAME, '_abm0._abl_')
+                like_btn.click()
+            else: limit += 1
+
+            if limit > 10:
+                print(f'There is no more feeds. Break loop.')
+                break
+
+            browser.get(url_feed)
+            time.sleep(3)
+            print(f'like_feeds count : {_ + 1}')
+
+        print('### Like stories is completed. ###')
+
 
 if __name__ == '__main__':
-    insta = InstaManager(STORY=True)
+    insta = InstaManager(TAGS=False,
+                         INFL=False,
+                         STORY=True,
+                         FEED=True)
     insta.process()

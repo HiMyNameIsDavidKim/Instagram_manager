@@ -27,26 +27,29 @@ btn_later2 = browser.find_element(By.CLASS_NAME, '_a9--._a9_1')
 btn_later2.click()
 time.sleep(3)
 
-story = browser.find_element(By.CLASS_NAME, '_aarf.x1e56ztr.x1gslohp')
-story.click()
-time.sleep(1)
+all_btn = browser.find_elements(By.CLASS_NAME, '_aamw')
+one_btn = all_btn[2]
 
-story_owner = browser.find_element(By.CLASS_NAME, '_ac0l').text
-like = browser.find_element(By.CLASS_NAME, '_aame')
-color = like.find_element(By.CLASS_NAME, '_ab6-').value_of_css_property('color')
-if color == 'rgba(255, 255, 255, 1)':
-    like.click()
-time.sleep(1)
+color = one_btn.find_element(By.CLASS_NAME, '_abm0')
+color = color.find_element(By.CLASS_NAME, '_ab6-')
+color = color.value_of_css_property('color')
+print(color)
+if color == 'rgba(142, 142, 142, 1)':
+    like_btn = one_btn.find_element(By.CLASS_NAME, '_abm0._abl_')
+    like_btn.click()
+    time.sleep(5)
 
-next_story = browser.find_element(By.CLASS_NAME, '_9zm2')
-next_story.click()
-time.sleep(1)
-
-quit_story = browser.find_elements(By.CLASS_NAME, '_abl-')[-1]
-quit_story.click()
-time.sleep(3)
-
-
+for _ in range(100):
+    all_btn = browser.find_elements(By.CLASS_NAME, '_aamw')
+    one_btn = all_btn[0]
+    color = one_btn.find_element(By.CLASS_NAME, '_abm0')
+    color = color.find_element(By.CLASS_NAME, '_ab6-')
+    color = color.value_of_css_property('color')
+    if color == 'rgba(142, 142, 142, 1)':
+        like_btn = one_btn.find_element(By.CLASS_NAME, '_abm0._abl_')
+        like_btn.click()
+    browser.get(url_feed)
+    time.sleep(3)
 
 
 prof = browser.find_element(By.CLASS_NAME, '_aaav')
