@@ -7,17 +7,20 @@ from bs4 import BeautifulSoup
 
 
 class InstaManager(object):
-    def __init__(self, TAGS=False, INFL=False):
-        global browser, url_login, url_tags, url_infl, file_idpw, file_tags, file_infl
+    def __init__(self, TAGS=False, INFL=False, STORY=False):
+        global browser, url_login, url_tags, url_infl, url_story, \
+            file_idpw, file_tags, file_infl
         browser = webdriver.Chrome()
         url_login = 'https://www.instagram.com/accounts/login/'
         url_tags = "https://www.instagram.com/explore/tags/"
         url_infl = "https://www.instagram.com/"
+        url_story = 'https://www.instagram.com/'
         file_idpw = r"/Users/davidkim/security/insta_nir.txt"
         file_tags = r"/Users/davidkim/security/insta_tags.txt"
         file_infl = r"/Users/davidkim/security/insta_infl.txt"
         self.TAGS = TAGS
         self.INFL = INFL
+        self.STORY = STORY
 
     def process(self):
         self.login()
@@ -26,6 +29,8 @@ class InstaManager(object):
             self.follow_by_tags()
         if self.INFL:
             self.follow_by_infl()
+        if self.STORY:
+            self.like_stories()
         self.logout()
         browser.quit()
 
@@ -114,7 +119,37 @@ class InstaManager(object):
 
         self.follow_loop(num)
 
+    def like_stories(self):
+        print('### Now start to like stories. ###')
+        browser.get(url_story)
+        time.sleep(3)
+
+        story = browser.find_element(By.CLASS_NAME, '_aarf.x1e56ztr.x1gslohp')
+        story.click()
+        time.sleep(1)
+
+        last_owner = ''
+        for _ in range(100):
+            now_owner = browser.find_element(By.CLASS_NAME, '_ac0l').text[:5]
+
+            if last_owner != now_owner:
+                like = browser.find_element(By.CLASS_NAME, '_abm0._abl_')
+                # color = like.find_element(By.CLASS_NAME, '_ab6-').value_of_css_property('color')
+                # if color == 'rgba(255, 255, 255, 1)':
+                like.click()
+                last_owner = now_owner
+                time.sleep(1)
+
+            next_story = browser.find_element(By.CLASS_NAME, '_9zm2')
+            next_story.click()
+            time.sleep(1)
+
+        quit_story = browser.find_elements(By.CLASS_NAME, '_abl-')[-1]
+        quit_story.click()
+        time.sleep(3)
+        print('### Like stories is completed. ###')
+
 
 if __name__ == '__main__':
-    insta = InstaManager()
+    insta = InstaManager(STORY=True)
     insta.process()

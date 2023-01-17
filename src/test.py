@@ -27,47 +27,24 @@ btn_later2 = browser.find_element(By.CLASS_NAME, '_a9--._a9_1')
 btn_later2.click()
 time.sleep(3)
 
+story = browser.find_element(By.CLASS_NAME, '_aarf.x1e56ztr.x1gslohp')
+story.click()
+time.sleep(1)
 
+story_owner = browser.find_element(By.CLASS_NAME, '_ac0l').text
+like = browser.find_element(By.CLASS_NAME, '_aame')
+color = like.find_element(By.CLASS_NAME, '_ab6-').value_of_css_property('color')
+if color == 'rgba(255, 255, 255, 1)':
+    like.click()
+time.sleep(1)
 
+next_story = browser.find_element(By.CLASS_NAME, '_9zm2')
+next_story.click()
+time.sleep(1)
 
-# file = open(r"/Users/davidkim/security/insta_tags.txt", "r")
-# data = file.read()
-# args = list(data.split('\n'))
-# browser.get("https://www.instagram.com/explore/tags/" + args[0])
-# time.sleep(3)
-#
-# feed = browser.find_elements(By.CLASS_NAME, "_aagw")
-# feed[0].click()
-#
-# likes = browser.find_element(By.CLASS_NAME, '_aacl._aaco._aacw._aacx._aada._aade')
-# likes.click()
-#
-# count = 0
-# for _ in range(100):
-#     rand = randrange(100)
-#     like_people = browser.find_elements(By.CLASS_NAME, '_acan._acap._acas._aj1-')[rand]
-#     if like_people.text == '팔로우' and count < 5:
-#         like_people.send_keys(Keys.ENTER)
-#         count += 1
-#         time.sleep(3)
-
-# file = open(r"/Users/davidkim/security/insta_infl.txt", "r")
-# data = file.read()
-# args = list(data.split('\n'))
-# browser.get("https://www.instagram.com/" + args[0])
-# time.sleep(3)
-#
-# followers = browser.find_elements(By.CLASS_NAME, '_aacl._aaco._aacu._aacy._aad6._aadb._aade')[1]
-# followers.click()
-#
-# count = 0
-# for _ in range(100):
-#     like_people = browser.find_elements(By.CLASS_NAME, '_acan._acap._acas._aj1-')[-1]
-#     if like_people.text == '팔로우' and count < 3:
-#         like_people.send_keys(Keys.ENTER)
-#         count += 1
-#         time.sleep(3)
-
+quit_story = browser.find_elements(By.CLASS_NAME, '_abl-')[-1]
+quit_story.click()
+time.sleep(3)
 
 
 
