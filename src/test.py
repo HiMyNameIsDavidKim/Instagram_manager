@@ -4,6 +4,7 @@ from selenium.webdriver.common.by import By
 import time
 from random import randrange
 from bs4 import BeautifulSoup
+from selenium.webdriver.support.wait import WebDriverWait
 
 browser = webdriver.Chrome()
 browser.get("https://www.instagram.com/accounts/login/")
@@ -27,29 +28,11 @@ btn_later2 = browser.find_element(By.CLASS_NAME, '_a9--._a9_1')
 btn_later2.click()
 time.sleep(3)
 
-all_btn = browser.find_elements(By.CLASS_NAME, '_aamw')
-one_btn = all_btn[2]
+unflw = browser.find_element(By.CLASS_NAME, '_acan._acap._acat._aj1-')
+unflw.click()
+unflw = browser.find_elements(By.CLASS_NAME, '_abm4')[-1]
+unflw.click()
 
-color = one_btn.find_element(By.CLASS_NAME, '_abm0')
-color = color.find_element(By.CLASS_NAME, '_ab6-')
-color = color.value_of_css_property('color')
-print(color)
-if color == 'rgba(142, 142, 142, 1)':
-    like_btn = one_btn.find_element(By.CLASS_NAME, '_abm0._abl_')
-    like_btn.click()
-    time.sleep(5)
-
-for _ in range(100):
-    all_btn = browser.find_elements(By.CLASS_NAME, '_aamw')
-    one_btn = all_btn[0]
-    color = one_btn.find_element(By.CLASS_NAME, '_abm0')
-    color = color.find_element(By.CLASS_NAME, '_ab6-')
-    color = color.value_of_css_property('color')
-    if color == 'rgba(142, 142, 142, 1)':
-        like_btn = one_btn.find_element(By.CLASS_NAME, '_abm0._abl_')
-        like_btn.click()
-    browser.get(url_feed)
-    time.sleep(3)
 
 
 prof = browser.find_element(By.CLASS_NAME, '_aaav')

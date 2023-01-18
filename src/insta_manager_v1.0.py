@@ -4,10 +4,11 @@ from selenium.webdriver.common.by import By
 import time
 from random import randrange
 from bs4 import BeautifulSoup
+from selenium.webdriver.support.wait import WebDriverWait
 
 
 class InstaManager(object):
-    def __init__(self, TAGS=False, INFL=False, STORY=False, FEED=False):
+    def __init__(self, TAGS=False, STORY=False, INFL=False, FEED=False, UNFLW=False):
         global browser, url_login, url_tags, url_infl, url_story, url_feed, \
             file_idpw, file_tags, file_infl
         browser = webdriver.Chrome()
@@ -20,38 +21,45 @@ class InstaManager(object):
         file_tags = r"/Users/davidkim/security/insta_tags.txt"
         file_infl = r"/Users/davidkim/security/insta_infl.txt"
         self.TAGS = TAGS
-        self.INFL = INFL
         self.STORY = STORY
+        self.INFL = INFL
         self.FEED = FEED
+        self.UNFLW = UNFLW
+        self.idd = None
+        self.cnt_flwer = 0
+        self.cnt_flwing = 0
 
     def process(self):
         self.login()
         self.laters()
         if self.TAGS:
             self.follow_by_tags()
-        if self.INFL:
-            self.follow_by_infl()
         if self.STORY:
             self.like_stories()
+        if self.INFL:
+            self.follow_by_infl()
         if self.FEED:
             self.like_feeds()
+        if self.UNFLW:
+            self.manage_flw()
         self.logout()
         browser.quit()
 
     def id_n_pw(self):
         file = open(file_idpw, "r")
         data = file.read()
-        id, pw = tuple(data.split('\n'))
+        idd, pw = tuple(data.split('\n'))
+        self.idd = idd
         print('### id and pw is uploaded. ###')
-        return id, pw
+        return idd, pw
 
     def login(self):
         browser.get(url_login)
         browser.implicitly_wait(10)
 
-        id, pw = self.id_n_pw()
+        idd, pw = self.id_n_pw()
         click = browser.find_elements(By.TAG_NAME, 'input')
-        click[0].send_keys(id)
+        click[0].send_keys(idd)
         click[1].send_keys(pw)
         click[1].send_keys(Keys.RETURN)
         print('### Login is completed. ###')
@@ -75,12 +83,15 @@ class InstaManager(object):
 
     def follow_loop(self, num):
         count = 0
-        for _ in range(100):
-            like_people = browser.find_elements(By.CLASS_NAME, '_acan._acap._acas._aj1-')[-1]
-            if like_people.text == '팔로우' and count < num:
-                like_people.send_keys(Keys.ENTER)
-                count += 1
-                time.sleep(3)
+        for i in range(20):
+            like_peoples = browser.find_elements(By.CLASS_NAME, '_acan._acap._acas._aj1-')
+            like_people = like_peoples[-1]
+            like_people.click()
+            count += 1
+            time.sleep(5)
+            browser.implicitly_wait(1)
+            if count >= num:
+                break
         print('### Follow loop is completed. ###')
 
     def follow_by_tags(self):
@@ -90,18 +101,18 @@ class InstaManager(object):
         tags = list(data.split('\n'))
         for tag in tags:
             browser.get(url_tags + tag)
-            time.sleep(3)
+            browser.implicitly_wait(10)
 
             self.follow_feed_liker(5)
 
     def follow_feed_liker(self, num):
         feed = browser.find_elements(By.CLASS_NAME, "_aagw")
-        feed[0].click()
+        feed[randrange(0, 10)].click()
         time.sleep(3)
 
         likes = browser.find_element(By.CLASS_NAME, '_aacl._aaco._aacw._aacx._aada._aade')
         likes.click()
-        time.sleep(3)
+        time.sleep(5)
 
         self.follow_loop(num)
 
@@ -111,29 +122,22 @@ class InstaManager(object):
         data = file.read()
         infls = list(data.split('\n'))
         for infl in infls:
-            browser.get(url_infl + infl)
-            time.sleep(3)
+            browser.get(url_infl + infl + '/followers/')
+            browser.implicitly_wait(10)
 
-            self.follow_followers(5)
-
-    def follow_followers(self, num):
-        followers = browser.find_elements(By.CLASS_NAME, '_aacl._aaco._aacu._aacy._aad6._aadb._aade')[1]
-        followers.click()
-        time.sleep(3)
-
-        self.follow_loop(num)
+            self.follow_loop(5)
 
     def like_stories(self):
         print('### Now start to like stories. ###')
         browser.get(url_story)
         time.sleep(3)
 
-        story = browser.find_element(By.CLASS_NAME, '_aarf.x1e56ztr.x1gslohp')
+        story = browser.find_elements(By.CLASS_NAME, '_aarf.x1e56ztr.x1gslohp')[3]
         story.click()
         time.sleep(1)
 
         last_owner = ''
-        for _ in range(100):
+        for _ in range(30):
             now_owner = browser.find_element(By.CLASS_NAME, '_ac0l').text[:5]
 
             if last_owner != now_owner:
@@ -160,7 +164,7 @@ class InstaManager(object):
         time.sleep(3)
 
         limit = 0
-        for _ in range(100):
+        for _ in range(30):
             one_btn = browser.find_elements(By.CLASS_NAME, '_aamw')[0]
 
             color = one_btn.find_element(By.CLASS_NAME, '_abm0')
@@ -182,10 +186,65 @@ class InstaManager(object):
 
         print('### Like stories is completed. ###')
 
+    def manage_flw(self):
+        print('### Now start to Manage followers. ###')
+        self.my_cnt_flws()
+        list_flwer = self.get_list_flwer()
+        list_flwing = self.get_list_flwing()
+        list_unflw = [x for x in list_flwing if x not in list_flwer]
+        for i in range(1, 16):
+            unflw = list_unflw[-i]
+            browser.get(f'https://www.instagram.com/{unflw}')
+            time.sleep(1)
+
+            buttons = browser.find_element(By.CLASS_NAME, '_acan._acap._acat._aj1-')
+            buttons.click()
+            time.sleep(1)
+
+            button = browser.find_elements(By.CLASS_NAME, '_abm4')[-1]
+            button.click()
+            time.sleep(1)
+            print(f'unfollow count : {i}')
+        print('### Manage followers is completed. ###')
+
+    def my_cnt_flws(self):
+        browser.get(f'https://www.instagram.com/{self.idd}')
+        time.sleep(3)
+        self.cnt_flwer = browser.find_elements(By.CLASS_NAME, '_ac2a')[1].text
+        self.cnt_flwing = browser.find_elements(By.CLASS_NAME, '_ac2a')[2].text
+
+    def get_list_flwer(self):
+        browser.get(f'https://www.instagram.com/{self.idd}/followers/')
+        time.sleep(3)
+        while True:
+            pop_up = browser.find_element(By.CLASS_NAME, "_aano")
+            browser.execute_script("arguments[0].scrollBy(0, 1000)", pop_up)  # 반복
+            time.sleep(0.5)
+            names = browser.find_elements(By.CLASS_NAME, '_aacl._aaco._aacw._aacx._aad7._aade')
+            if len(names) >= int(self.cnt_flwer):
+                list_flwer = [name.text for name in names][1:]
+                break
+        return list_flwer
+
+    def get_list_flwing(self):
+        browser.get(f'https://www.instagram.com/{self.idd}/following/')
+        time.sleep(3)
+        while True:
+            pop_up = browser.find_element(By.CLASS_NAME, "_aano")
+            browser.execute_script("arguments[0].scrollBy(0, 1000)", pop_up)  # 반복
+            time.sleep(0.5)
+            names = browser.find_elements(By.CLASS_NAME, '_aacl._aaco._aacw._aacx._aad7._aade')
+            if len(names) > 300:
+                list_flwing = [name.text for name in names][1:]
+                break
+        return list_flwing
+
+
 
 if __name__ == '__main__':
     insta = InstaManager(TAGS=False,
+                         STORY=False,
                          INFL=False,
-                         STORY=True,
-                         FEED=True)
+                         FEED=False,
+                         UNFLW=True)
     insta.process()
