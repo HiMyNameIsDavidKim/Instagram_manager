@@ -5,6 +5,7 @@ import time
 from random import randrange
 from bs4 import BeautifulSoup
 from selenium.webdriver.support.wait import WebDriverWait
+import sys
 
 browser = webdriver.Chrome()
 browser.get("https://www.instagram.com/accounts/login/")
@@ -23,15 +24,17 @@ time.sleep(5)
 btn_later1 = browser.find_element(By.CLASS_NAME, '_acan._acao._acas')
 btn_later1.click()
 time.sleep(3)
-
 btn_later2 = browser.find_element(By.CLASS_NAME, '_a9--._a9_1')
 btn_later2.click()
 time.sleep(3)
 
-unflw = browser.find_element(By.CLASS_NAME, '_acan._acap._acat._aj1-')
-unflw.click()
-unflw = browser.find_elements(By.CLASS_NAME, '_abm4')[-1]
-unflw.click()
+divs = browser.find_elements(By.TAG_NAME, 'div')
+if '나중에 다시 시도하세요' in divs[-30].text:
+    print('### Warning : Too much request ###')
+    print('### Warning : Too much request ###')
+    print('### Warning : Too much request ###')
+    print('### Warning : Too much request ###')
+    print('### Warning : Too much request ###')
 
 
 
