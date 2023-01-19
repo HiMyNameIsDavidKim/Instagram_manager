@@ -28,15 +28,6 @@ btn_later2 = browser.find_element(By.CLASS_NAME, '_a9--._a9_1')
 btn_later2.click()
 time.sleep(3)
 
-divs = browser.find_elements(By.TAG_NAME, 'div')
-if '나중에 다시 시도하세요' in divs[-30].text:
-    print('### Warning : Too much request ###')
-    print('### Warning : Too much request ###')
-    print('### Warning : Too much request ###')
-    print('### Warning : Too much request ###')
-    print('### Warning : Too much request ###')
-
-
 
 prof = browser.find_element(By.CLASS_NAME, '_aaav')
 prof.click()
