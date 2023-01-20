@@ -105,7 +105,7 @@ class InstaManager(object):
             for i in range(minute):
                 print(f'### System cool down : {minute-i} min left ###')
                 time.sleep(60)
-        self.check = 1
+            self.check = 1
     def warn_reqs_over(self):
         divs = browser.find_elements(By.TAG_NAME, 'div')
         if '나중에 다시 시도하세요' in divs[-30].text:
@@ -115,10 +115,20 @@ class InstaManager(object):
             print('### Warning : Too much request ###')
             print('### Warning : Too much request ###')
             print('### Shut Down ###')
-        self.check = 2
+            self.check = 2
 
     def follow_loop(self, num):
-        like_peoples = browser.find_elements(By.CLASS_NAME, '_acan._acap._acas._aj1-')
+        while True:
+            like_peoples = browser.find_elements(By.CLASS_NAME, '_acan._acap')
+            target = []
+            [target.append(i) if i.text == '팔로우' else None for i in like_peoples]
+            if len(target) > num+3:
+                break
+            pop_up = browser.find_elements(By.CLASS_NAME, "_acan._acap._acat._aj1-")[-1]
+            pop_up.send_keys(Keys.TAB)
+            time.sleep(1)
+        like_peoples = target[1:]
+
         count = 0
         for like_people in like_peoples:
             like_people.click()
@@ -153,14 +163,6 @@ class InstaManager(object):
         likes.click()
         browser.implicitly_wait(10)
         time.sleep(3)
-
-        while True:
-            like_peoples = browser.find_elements(By.CLASS_NAME, '_acan._acap._acas._aj1-')
-            if len(like_peoples) > 3:
-                break
-            pop_up = browser.find_elements(By.CLASS_NAME, "_acan._acap._acat._aj1-")[-1]
-            pop_up.send_keys(Keys.TAB)
-            time.sleep(0.5)
 
         self.follow_loop(num)
 
@@ -252,29 +254,35 @@ class InstaManager(object):
         self.get_list_unfl(num)
         list_unflw = self.list_unflw
 
+        cnt = 0
         for _ in range(1, num+1):
-            unflw = list_unflw[-1]
+            unflw = list_unflw[-2]
             browser.get(f'https://www.instagram.com/{unflw}')
             time.sleep(1)
 
-            buttons = browser.find_element(By.CLASS_NAME, '_acan._acap._acat._aj1-')
-            buttons.click()
-            time.sleep(1)
+            buttons = browser.find_element(By.CLASS_NAME, '_acan._acap')
+            if buttons.text == '팔로잉':
+                buttons.click()
+                time.sleep(1)
 
-            button = browser.find_elements(By.CLASS_NAME, '_abm4')[-1]
-            button.click()
+                button = browser.find_elements(By.CLASS_NAME, '_abm4')[-1]
+                button.click()
+                time.sleep(1)
+
+                cnt += 1
+                print(f'unfollow count : {cnt}')
+
             list_unflw.remove(unflw)
-            print(f'unfollow count : {_}')
-            time.sleep(1)
 
-            if self.check == 0:
-                self.check_reqs_over(7)
-            elif self.check == 1:
-                self.warn_reqs_over()
-            else:
-                break
+            if self.check == 0: self.check_reqs_over(7)
+            elif self.check == 1: self.warn_reqs_over()
+            elif self.check == 2: break
+            else: pass
 
-        self.list_unflw = list_unflw
+        file = open(file_unfl, "w")
+        [file.write(f'{i}\n') if i != '인증됨' and i != '' else None for i in self.list_unflw]
+        file.close()
+
         print('### Manage followers is completed. ###')
 
     def get_list_unfl(self, num):
@@ -289,7 +297,7 @@ class InstaManager(object):
             list_flwing = self.get_list_flwing()
             self.list_unflw = [i for i in list_flwing if i not in list_flwer]
             file = open(file_unfl, "w")
-            [file.write(f'{i}\n') for i in self.list_unflw]
+            [file.write(f'{i}\n') if i != '인증됨' and i != '' else None for i in self.list_unflw]
             file.close()
         else:
             pass
@@ -335,5 +343,5 @@ if __name__ == '__main__':
                          INFL=False,
                          FEED=False,
                          UNFLW=True,
-                         REPEAT=10)
+                         REPEAT=3)
     insta.process()

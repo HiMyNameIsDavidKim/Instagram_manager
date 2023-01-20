@@ -28,16 +28,8 @@ btn_later2 = browser.find_element(By.CLASS_NAME, '_a9--._a9_1')
 btn_later2.click()
 time.sleep(3)
 
-file_unfl = r"/Users/davidkim/security/insta_unfl.txt"
-file = open(file_unfl, "r")
-data = file.read()
-list_unflw = list(data.split('\n'))
-print(list_unflw)
 
-list_unflw2 = [1, 2, 3, 4, 5, 6, 7, 8, 9]
-file = open(file_unfl, "w")
-[file.write(f'{i}\n') for i in list_unflw2]
-file.close()
+
 
 
 
