@@ -52,6 +52,7 @@ class InstaManager(object):
         file = open(file_idpw, "r")
         data = file.read()
         idd, pw = tuple(data.split('\n'))
+        file.close()
         self.idd = idd
         print('### id and pw is uploaded. ###')
         return idd, pw
@@ -133,6 +134,7 @@ class InstaManager(object):
         file = open(file_tags, "r")
         data = file.read()
         tags = list(data.split('\n'))
+        file.close()
         for tag in tags:
             print(f'### tag : {tag} ###')
             browser.get(url_tags + tag)
@@ -167,6 +169,7 @@ class InstaManager(object):
         file = open(file_infl, "r")
         data = file.read()
         infls = list(data.split('\n'))
+        file.close()
         for infl in infls:
             print(f'### influencer : {infl} ###')
             browser.get(url_main + infl + '/followers/')
@@ -278,15 +281,18 @@ class InstaManager(object):
         file = open(file_unfl, "r")
         data = file.read()
         self.list_unflw = list(data.split('\n'))
+        file.close()
 
         if len(self.list_unflw) < num:
             self.my_cnt_flws()
             list_flwer = self.get_list_flwer()
             list_flwing = self.get_list_flwing()
-            list_unflw = [i for i in list_flwing if i not in list_flwer]
+            self.list_unflw = [i for i in list_flwing if i not in list_flwer]
+            file = open(file_unfl, "w")
+            [file.write(f'{i}\n') for i in self.list_unflw]
+            file.close()
         else:
-            list_unflw = self.list_unflw
-
+            pass
 
     def my_cnt_flws(self):
         browser.get(f'https://www.instagram.com/{self.idd}')

@@ -34,6 +34,11 @@ data = file.read()
 list_unflw = list(data.split('\n'))
 print(list_unflw)
 
+list_unflw2 = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+file = open(file_unfl, "w")
+[file.write(f'{i}\n') for i in list_unflw2]
+file.close()
+
 
 
 prof = browser.find_element(By.CLASS_NAME, '_aaav')
