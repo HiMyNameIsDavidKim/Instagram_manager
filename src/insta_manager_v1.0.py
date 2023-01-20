@@ -11,7 +11,7 @@ import sys
 class InstaManager(object):
     def __init__(self, TAGS=False, STORY=False, INFL=False, FEED=False, UNFLW=False, REPEAT=1):
         global browser, url_login, url_tags, url_main, \
-            file_idpw, file_tags, file_infl
+            file_idpw, file_tags, file_infl, file_unfl
         browser = webdriver.Chrome()
         url_login = 'https://www.instagram.com/accounts/login/'
         url_tags = "https://www.instagram.com/explore/tags/"
@@ -19,6 +19,7 @@ class InstaManager(object):
         file_idpw = r"/Users/davidkim/security/insta_nir.txt"
         file_tags = r"/Users/davidkim/security/insta_tags.txt"
         file_infl = r"/Users/davidkim/security/insta_infl.txt"
+        file_unfl = r"/Users/davidkim/security/insta_unfl.txt"
         self.TAGS = TAGS
         self.STORY = STORY
         self.INFL = INFL
@@ -28,6 +29,7 @@ class InstaManager(object):
         self.idd = None
         self.cnt_flwer = 0
         self.cnt_flwing = 0
+        self.list_unflw = []
         self.check = 0
 
     def process(self):
@@ -244,13 +246,11 @@ class InstaManager(object):
 
     def manage_flw(self, num):
         print('### Now start to Manage followers. ###')
-        self.my_cnt_flws()
-        list_flwer = self.get_list_flwer()
-        list_flwing = self.get_list_flwing()
-        list_unflw = [i for i in list_flwing if i not in list_flwer]
+        self.get_list_unfl(num)
+        list_unflw = self.list_unflw
 
         for _ in range(1, num+1):
-            unflw = list_unflw[150:][randrange(len(list_unflw)-151)]
+            unflw = list_unflw[-1]
             browser.get(f'https://www.instagram.com/{unflw}')
             time.sleep(1)
 
@@ -271,7 +271,22 @@ class InstaManager(object):
             else:
                 break
 
+        self.list_unflw = list_unflw
         print('### Manage followers is completed. ###')
+
+    def get_list_unfl(self, num):
+        file = open(file_unfl, "r")
+        data = file.read()
+        self.list_unflw = list(data.split('\n'))
+
+        if len(self.list_unflw) < num:
+            self.my_cnt_flws()
+            list_flwer = self.get_list_flwer()
+            list_flwing = self.get_list_flwing()
+            list_unflw = [i for i in list_flwing if i not in list_flwer]
+        else:
+            list_unflw = self.list_unflw
+
 
     def my_cnt_flws(self):
         browser.get(f'https://www.instagram.com/{self.idd}')
@@ -285,7 +300,7 @@ class InstaManager(object):
         while True:
             pop_up = browser.find_element(By.CLASS_NAME, "_aano")
             browser.execute_script("arguments[0].scrollBy(0, 1000)", pop_up)  # 반복
-            time.sleep(0.5)
+            time.sleep(1)
             names = browser.find_elements(By.CLASS_NAME, '_aacl._aaco._aacw._aacx._aad7._aade')
             if len(names) >= int(self.cnt_flwer):
                 list_flwer = [name.text for name in names][1:]
@@ -299,7 +314,7 @@ class InstaManager(object):
         while True:
             pop_up = browser.find_element(By.CLASS_NAME, "_aano")
             browser.execute_script("arguments[0].scrollBy(0, 1000)", pop_up)  # 반복
-            time.sleep(0.5)
+            time.sleep(1)
             names = browser.find_elements(By.CLASS_NAME, '_aacl._aaco._aacw._aacx._aad7._aade')
             if len(names) > int(self.cnt_flwer)+200:
                 list_flwing = [name.text for name in names][1:]
@@ -309,10 +324,10 @@ class InstaManager(object):
 
 
 if __name__ == '__main__':
-    insta = InstaManager(TAGS=True,
-                         STORY=True,
+    insta = InstaManager(TAGS=False,
+                         STORY=False,
                          INFL=False,
-                         FEED=True,
-                         UNFLW=False,
-                         REPEAT=1)
+                         FEED=False,
+                         UNFLW=True,
+                         REPEAT=10)
     insta.process()

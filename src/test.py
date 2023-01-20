@@ -28,6 +28,13 @@ btn_later2 = browser.find_element(By.CLASS_NAME, '_a9--._a9_1')
 btn_later2.click()
 time.sleep(3)
 
+file_unfl = r"/Users/davidkim/security/insta_unfl.txt"
+file = open(file_unfl, "r")
+data = file.read()
+list_unflw = list(data.split('\n'))
+print(list_unflw)
+
+
 
 prof = browser.find_element(By.CLASS_NAME, '_aaav')
 prof.click()
