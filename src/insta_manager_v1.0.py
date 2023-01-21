@@ -205,8 +205,6 @@ class InstaManager(object):
 
             if last_owner != now_owner:
                 like = browser.find_element(By.CLASS_NAME, '_abm0._abl_')
-                # color = like.find_element(By.CLASS_NAME, '_ab6-').value_of_css_property('color')
-                # if color == 'rgba(255, 255, 255, 1)':
                 like.click()
                 last_owner = now_owner
                 time.sleep(1)
@@ -343,5 +341,5 @@ if __name__ == '__main__':
                          INFL=False,
                          FEED=False,
                          UNFLW=True,
-                         REPEAT=3)
+                         REPEAT=10)
     insta.process()
