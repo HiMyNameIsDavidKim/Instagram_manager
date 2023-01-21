@@ -336,7 +336,7 @@ class InstaManager(object):
 
 
 if __name__ == '__main__':
-    insta = InstaManager(TAGS=False,
+    insta = InstaManager(TAGS=True,
                          STORY=False,
                          INFL=False,
                          FEED=False,
