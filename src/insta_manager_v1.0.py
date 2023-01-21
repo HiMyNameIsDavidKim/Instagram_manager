@@ -45,7 +45,7 @@ class InstaManager(object):
             if self.FEED:
                 self.like_feeds(30)
             if self.UNFLW:
-                self.manage_flw(15)
+                self.manage_flw(10)
         self.logout()
 
     def id_n_pw(self):
@@ -70,14 +70,18 @@ class InstaManager(object):
         time.sleep(3)
 
     def logout(self):
-        browser.get(url_main)
+        browser.get(f'{url_main}{self.idd}')
         browser.implicitly_wait(10)
         time.sleep(1)
 
-        prof = browser.find_element(By.CLASS_NAME, '_aaav')
-        prof.click()
-        logout = browser.find_elements(By.CLASS_NAME, '_aacl._aaco._aacu._aacx._aada')[-1]
-        logout.click()
+        settings = browser.find_element(By.CLASS_NAME, '_ab6-')
+        settings.click()
+        time.sleep(1)
+
+        logout_btn = browser.find_elements(By.CLASS_NAME, '_a9--._a9_1')[-2]
+        logout_btn.click()
+        time.sleep(1)
+
         print('### Logout is completed. ###')
         browser.quit()
 
@@ -105,7 +109,8 @@ class InstaManager(object):
             for i in range(minute):
                 print(f'### System cool down : {minute-i} min left ###')
                 time.sleep(60)
-            self.check = 1
+            self.check += 1
+
     def warn_reqs_over(self):
         divs = browser.find_elements(By.TAG_NAME, 'div')
         if '나중에 다시 시도하세요' in divs[-30].text:
@@ -115,7 +120,7 @@ class InstaManager(object):
             print('### Warning : Too much request ###')
             print('### Warning : Too much request ###')
             print('### Shut Down ###')
-            self.check = 2
+            self.check += 1
 
     def follow_loop(self, num):
         while True:
@@ -154,8 +159,8 @@ class InstaManager(object):
             self.follow_feed_liker(num)
 
     def follow_feed_liker(self, num):
-        feed = browser.find_elements(By.CLASS_NAME, "_aagw")
-        feed[randrange(0, 3)].click()
+        feed = browser.find_elements(By.CLASS_NAME, "_aagw")[0]
+        feed.click()
         browser.implicitly_wait(10)
         time.sleep(3)
 
@@ -181,7 +186,7 @@ class InstaManager(object):
             while True:
                 pop_up = browser.find_element(By.CLASS_NAME, "_aano")
                 browser.execute_script("arguments[0].scrollBy(0, 1000)", pop_up)  # 반복
-                time.sleep(0.5)
+                time.sleep(1)
 
                 like_peoples = browser.find_elements(By.CLASS_NAME, '_acan._acap._acas._aj1-')
                 if len(like_peoples) != 0:
@@ -255,7 +260,7 @@ class InstaManager(object):
         cnt = 0
         for _ in range(1, num+1):
             unflw = list_unflw[-2]
-            browser.get(f'https://www.instagram.com/{unflw}')
+            browser.get(f'{url_main}{unflw}')
             time.sleep(1)
 
             buttons = browser.find_element(By.CLASS_NAME, '_acan._acap')
@@ -272,10 +277,11 @@ class InstaManager(object):
 
             list_unflw.remove(unflw)
 
-            if self.check == 0: self.check_reqs_over(7)
-            elif self.check == 1: self.warn_reqs_over()
-            elif self.check == 2: break
-            else: pass
+            if self.check in range(10):
+                self.check_reqs_over(10)
+            elif self.check == 10:
+                self.warn_reqs_over()
+                break
 
         file = open(file_unfl, "w")
         [file.write(f'{i}\n') if i != '인증됨' and i != '' else None for i in self.list_unflw]
@@ -294,20 +300,21 @@ class InstaManager(object):
             list_flwer = self.get_list_flwer()
             list_flwing = self.get_list_flwing()
             self.list_unflw = [i for i in list_flwing if i not in list_flwer]
+            self.list_unflw = [i if i != '인증됨' and i != '' else None for i in self.list_unflw]
             file = open(file_unfl, "w")
-            [file.write(f'{i}\n') if i != '인증됨' and i != '' else None for i in self.list_unflw]
+            [file.write(f'{i}\n') for i in self.list_unflw]
             file.close()
         else:
             pass
 
     def my_cnt_flws(self):
-        browser.get(f'https://www.instagram.com/{self.idd}')
+        browser.get(f'{url_main}{self.idd}')
         time.sleep(3)
         self.cnt_flwer = browser.find_elements(By.CLASS_NAME, '_ac2a')[1].text
         self.cnt_flwing = browser.find_elements(By.CLASS_NAME, '_ac2a')[2].text
 
     def get_list_flwer(self):
-        browser.get(f'https://www.instagram.com/{self.idd}/followers/')
+        browser.get(f'{url_main}{self.idd}/followers/')
         time.sleep(3)
         while True:
             pop_up = browser.find_element(By.CLASS_NAME, "_aano")
@@ -321,7 +328,7 @@ class InstaManager(object):
         return list_flwer
 
     def get_list_flwing(self):
-        browser.get(f'https://www.instagram.com/{self.idd}/following/')
+        browser.get(f'{url_main}{self.idd}/following/')
         time.sleep(3)
         while True:
             pop_up = browser.find_element(By.CLASS_NAME, "_aano")
@@ -337,9 +344,9 @@ class InstaManager(object):
 
 if __name__ == '__main__':
     insta = InstaManager(TAGS=True,
-                         STORY=False,
+                         STORY=True,
                          INFL=False,
-                         FEED=False,
+                         FEED=True,
                          UNFLW=True,
                          REPEAT=10)
     insta.process()
