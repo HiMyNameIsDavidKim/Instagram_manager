@@ -28,12 +28,12 @@ btn_later2 = browser.find_element(By.CLASS_NAME, '_a9--._a9_1')
 btn_later2.click()
 time.sleep(3)
 
-settings = browser.find_element(By.CLASS_NAME, '_ab6-')
-settings.click()
+########################
 
-logout_btn = browser.find_elements(By.CLASS_NAME, '_a9--._a9_1')[-2]
-logout_btn.click()
+next_story = browser.find_element(By.CLASS_NAME, '_ac0h._advu')
+next_story.click()
 
+########################
 
 prof = browser.find_element(By.CLASS_NAME, '_aaav')
 prof.click()

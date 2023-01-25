@@ -37,11 +37,11 @@ class InstaManager(object):
         self.laters()
         for _ in range(self.REPEAT):
             if self.TAGS:
-                self.follow_by_tags(3)
+                self.follow_by_tags(5)
             if self.STORY:
                 self.like_stories(30)
             if self.INFL:
-                self.follow_by_infl(3)
+                self.follow_by_infl(5)
             if self.FEED:
                 self.like_feeds(30)
             if self.UNFLW:
@@ -67,6 +67,7 @@ class InstaManager(object):
         click[1].send_keys(pw)
         click[1].send_keys(Keys.RETURN)
         print('### Login is completed. ###')
+        browser.implicitly_wait(10)
         time.sleep(3)
 
     def logout(self):
@@ -96,9 +97,9 @@ class InstaManager(object):
         time.sleep(3)
         print('### Later processes is completed. ###')
 
-    def check_reqs_over(self, minute):
+    def check_reqs_over(self, minute, index):
         divs = browser.find_elements(By.TAG_NAME, 'div')
-        if '나중에 다시 시도하세요' in divs[-30].text:
+        if '나중에 다시 시도하세요' in divs[-index].text:
             print('### Warning : Too much request ###')
             print('### Warning : Too much request ###')
             print('### Warning : Too much request ###')
@@ -111,9 +112,9 @@ class InstaManager(object):
                 time.sleep(60)
             self.check += 1
 
-    def warn_reqs_over(self):
+    def warn_reqs_over(self, index):
         divs = browser.find_elements(By.TAG_NAME, 'div')
-        if '나중에 다시 시도하세요' in divs[-30].text:
+        if '나중에 다시 시도하세요' in divs[-index].text:
             print('### Warning : Too much request ###')
             print('### Warning : Too much request ###')
             print('### Warning : Too much request ###')
@@ -129,7 +130,7 @@ class InstaManager(object):
             [target.append(i) if i.text == '팔로우' else None for i in like_peoples]
             if len(target) > num+3:
                 break
-            pop_up = browser.find_elements(By.CLASS_NAME, "_acan._acap._acat._aj1-")[-1]
+            pop_up = browser.find_elements(By.CLASS_NAME, "_acan._acap")[-1]
             pop_up.send_keys(Keys.TAB)
             time.sleep(1)
         like_peoples = target[1:]
@@ -142,6 +143,13 @@ class InstaManager(object):
             browser.implicitly_wait(1)
             if count >= num:
                 break
+
+            if self.check in range(10):
+                self.check_reqs_over(10, 50)
+            elif self.check == 10:
+                self.warn_reqs_over(50)
+                break
+
         print(f'### Follow loop is completed.({count}ea) ###')
 
     def follow_by_tags(self, num):
@@ -159,7 +167,7 @@ class InstaManager(object):
             self.follow_feed_liker(num)
 
     def follow_feed_liker(self, num):
-        feed = browser.find_elements(By.CLASS_NAME, "_aagw")[0]
+        feed = browser.find_elements(By.CLASS_NAME, "_aagw")[randrange(0, 5)]
         feed.click()
         browser.implicitly_wait(10)
         time.sleep(3)
@@ -278,9 +286,9 @@ class InstaManager(object):
             list_unflw.remove(unflw)
 
             if self.check in range(10):
-                self.check_reqs_over(10)
+                self.check_reqs_over(10, 30)
             elif self.check == 10:
-                self.warn_reqs_over()
+                self.warn_reqs_over(30)
                 break
 
         file = open(file_unfl, "w")
@@ -335,7 +343,7 @@ class InstaManager(object):
             browser.execute_script("arguments[0].scrollBy(0, 1000)", pop_up)  # 반복
             time.sleep(1)
             names = browser.find_elements(By.CLASS_NAME, '_aacl._aaco._aacw._aacx._aad7._aade')
-            if len(names) > int(self.cnt_flwer)+200:
+            if len(names) > int(self.cnt_flwer)+100:
                 list_flwing = [name.text for name in names][1:]
                 break
         print(f'### followings sample : {len(list_flwing)} ###')
@@ -345,7 +353,7 @@ class InstaManager(object):
 if __name__ == '__main__':
     insta = InstaManager(TAGS=True,
                          STORY=True,
-                         INFL=False,
+                         INFL=True,
                          FEED=True,
                          UNFLW=True,
                          REPEAT=10)
