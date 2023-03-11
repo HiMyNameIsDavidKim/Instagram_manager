@@ -8,6 +8,9 @@ from selenium.webdriver.support.wait import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 import sys
 
+# Because of Naver's security program, use it line by line.
+
+# Login
 browser = webdriver.Chrome(ChromeDriverManager().install())
 browser.get("https://nid.naver.com/nidlogin.login?mode=form&url=https%3A%2F%2Fwww.naver.com")
 time.sleep(1)
@@ -25,26 +28,28 @@ time.sleep(1)
 browser.find_element(By.CSS_SELECTOR, '.btn_login').click()
 time.sleep(5)
 
-btn_later1 = browser.find_element(By.CLASS_NAME, '_acan._acao._acas')
-btn_later1.click()
-time.sleep(3)
-btn_later2 = browser.find_element(By.CLASS_NAME, '_a9--._a9_1')
-btn_later2.click()
-time.sleep(3)
-
-########################
-
-story = browser.find_elements(By.CLASS_NAME, '_aarf.x1e56ztr.x1gslohp')[1]
-story.click()
-
-########################
-
-browser.get(f'https://www.instagram.com/{idd}')
-browser.implicitly_wait(10)
+# soyChu
+browser.get("https://section.blog.naver.com/BlogHome.naver?directoryNo=0&currentPage=1&groupId=0")
 time.sleep(1)
-settings = browser.find_element(By.CLASS_NAME, '_abm0')
-settings.click()
-time.sleep(1)
-logout_btn = browser.find_elements(By.CLASS_NAME, '_a9--._a9_1')[-2]
-logout_btn.click()
-time.sleep(1)
+
+straws = []
+spans = browser.find_elements(By.CLASS_NAME, 'reply')
+for span in spans:
+    if int(span.find_element(By.TAG_NAME, 'em').text) > 30:
+        straws.append(span)
+
+for straw in straws:
+    straw.click()
+
+iframe = browser.find_element(By.TAG_NAME, 'iframe')
+browser.switch_to.frame(iframe)
+
+
+# html = browser.find_element(By.TAG_NAME, 'html')
+# body = browser.find_element(By.TAG_NAME, 'body')
+# browser.switch_to.parent_frame()
+#
+# soys = browser.find_element(By.CLASS_NAME, 'u_cbox_name')
+# for soy in soys:
+#     soy.get_attribute('href')
+#     print(soy)

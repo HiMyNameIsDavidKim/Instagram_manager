@@ -9,7 +9,7 @@ import sys
 
 
 class InstaManager(object):
-    def __init__(self, TAGS=False, STORY=False, INFL=False, FEED=False, UNFLW=False, REPEAT=1):
+    def __init__(self, TAGS=False, STORY=False, FEED=False, INFL=False, UNFLW=False, REPEAT=1):
         global browser, url_login, url_tags, url_main, \
             file_idpw, file_tags, file_infl, file_unfl
         browser = webdriver.Chrome()
@@ -22,8 +22,8 @@ class InstaManager(object):
         file_unfl = r"/Users/davidkim/security/insta_unfl.txt"
         self.TAGS = TAGS
         self.STORY = STORY
-        self.INFL = INFL
         self.FEED = FEED
+        self.INFL = INFL
         self.UNFLW = UNFLW
         self.REPEAT = REPEAT
         self.idd = None
@@ -40,10 +40,10 @@ class InstaManager(object):
                 self.follow_by_tags(5)
             if self.STORY:
                 self.like_stories(30)
-            if self.INFL:
-                self.follow_by_infl(5)
             if self.FEED:
                 self.like_feeds(30)
+            if self.INFL:
+                self.follow_by_infl(5)
             if self.UNFLW:
                 self.manage_flw(10)
         self.logout()
@@ -68,14 +68,14 @@ class InstaManager(object):
         click[1].send_keys(Keys.RETURN)
         print('### Login is completed. ###')
         browser.implicitly_wait(10)
-        time.sleep(3)
+        time.sleep(5)
 
     def logout(self):
         browser.get(f'{url_main}{self.idd}')
         browser.implicitly_wait(10)
         time.sleep(1)
 
-        settings = browser.find_element(By.CLASS_NAME, '_ab6-')
+        settings = browser.find_element(By.CLASS_NAME, '_abm0')
         settings.click()
         time.sleep(1)
 
@@ -208,7 +208,7 @@ class InstaManager(object):
         browser.implicitly_wait(10)
         time.sleep(3)
 
-        story = browser.find_elements(By.CLASS_NAME, '_aarf.x1e56ztr.x1gslohp')[1]
+        story = browser.find_elements(By.CLASS_NAME, '_aarf.x1e56ztr')[1]
         story.click()
         time.sleep(3)
 
@@ -353,8 +353,8 @@ class InstaManager(object):
 if __name__ == '__main__':
     insta = InstaManager(TAGS=True,
                          STORY=True,
-                         INFL=True,
                          FEED=True,
+                         INFL=True,
                          UNFLW=False,
-                         REPEAT=10)
+                         REPEAT=1)
     insta.process()
