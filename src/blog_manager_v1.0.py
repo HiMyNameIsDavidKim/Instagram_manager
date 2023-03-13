@@ -80,4 +80,5 @@ for soy_window in soy_windows:
     driver.close()
     time.sleep(0.5)
 
+
 ### 리스트 레인지 오버 에러 뜸 뭔지 모르겠음
