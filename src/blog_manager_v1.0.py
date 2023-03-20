@@ -94,8 +94,8 @@ for straw in straws:
         cnt_soy += 1
 
 # thatGul
-for groupId in [5, 1]:
-    for page in range(100):
+for groupId in [6, 1, 5]:
+    for page in range(1, 100):
         driver.get(f"https://section.blog.naver.com/BlogHome.naver?directoryNo=0&currentPage={page}&groupId={groupId}")
         time.sleep(1)
         gul_time = driver.find_element(By.CLASS_NAME, 'time')
@@ -128,8 +128,8 @@ driver.switch_to.window(driver.window_handles[-1])
 driver.switch_to.frame('mainFrame')
 pages = driver.find_elements(By.CLASS_NAME, 'u_cbox_page')
 for i in range(0, 300):
-    dap = driver.find_elements(By.CLASS_NAME, 'u_cbox_btn_reply')
-    dap[2 * i].click()
+    daps = driver.find_elements(By.CLASS_NAME, 'u_cbox_btn_reply')
+    daps[2 * i].click()
     time.sleep(1)
     text_box = driver.find_element(By.CLASS_NAME, 'u_cbox_text.u_cbox_text_mention')
     text_box.send_keys(cmt_theThatGul)
@@ -138,3 +138,6 @@ for i in range(0, 300):
     btn = driver.find_element(By.CLASS_NAME, 'u_cbox_txt_upload')
     btn.click()
     time.sleep(2)
+
+# window comeback
+driver.switch_to.window(driver.window_handles[-1])
