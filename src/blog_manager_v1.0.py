@@ -9,23 +9,21 @@ from webdriver_manager.chrome import ChromeDriverManager
 import sys
 from datetime import datetime
 
-# Because of Naver's security program, use it line by line.
+''' Because of Naver's security program, use it line by line. '''
 
 # Login
 driver = webdriver.Chrome(ChromeDriverManager().install())
 driver.get("https://nid.naver.com/nidlogin.login?mode=form&url=https%3A%2F%2Fwww.naver.com")
 time.sleep(1)
-
-file = open(r"/Users/davidkim/security/blog_lr.txt", "r")
+file = open(r"/Users/davidkim/security/blog_lr.txt", "r", encoding='UTF8')
 data = file.read()
 idd, pw = tuple(data.split('\n'))
-file = open(r"/Users/davidkim/security/blog_soyChu.txt", "r")
+file = open(r"/Users/davidkim/security/blog_soyChu.txt", "r", encoding='UTF8')
 cmt_soyChu = file.read()
-file = open(r"/Users/davidkim/security/blog_thatGul.txt", "r")
+file = open(r"/Users/davidkim/security/blog_thatGul.txt", "r", encoding='UTF8')
 cmt_thatGul = file.read()
-file = open(r"/Users/davidkim/security/blog_theThatGul.txt", "r")
+file = open(r"/Users/davidkim/security/blog_theThatGul.txt", "r", encoding='UTF8')
 cmt_theThatGul = file.read()
-
 input_box = driver.find_element(By.CSS_SELECTOR, '#id')
 input_box.send_keys(idd)
 time.sleep(1)
@@ -34,6 +32,34 @@ input_box.send_keys(pw)
 time.sleep(1)
 driver.find_element(By.CSS_SELECTOR, '.btn_login').click()
 time.sleep(5)
+
+# soyChu_trip
+for page in range(3):
+    driver.get(f"https://section.blog.naver.com/ThemePost.naver?directoryNo=28&activeDirectorySeq=3&currentPage={page}")
+    time.sleep(1)
+    spans = driver.find_elements(By.CLASS_NAME, 'name_author')
+    for span in spans:
+        span.click()
+        time.sleep(3)
+        driver.switch_to.window(driver.window_handles[-1])
+        driver.switch_to.frame('mainFrame')
+        btn = driver.find_element(By.CLASS_NAME, 'btn_area')
+        if btn.text == '이웃추가':
+            btn.click()
+            time.sleep(2)
+            driver.switch_to.window(driver.window_handles[-1])
+            time.sleep(2)
+            each = driver.find_elements(By.TAG_NAME, 'label')[-1]  #
+            each.click()
+            nex = driver.find_element(By.CLASS_NAME, 'button_next._buddyAddNext')
+            nex.click()
+            time.sleep(2)
+            text_box = driver.find_element(By.TAG_NAME, 'textarea')
+            text_box.send_keys(cmt_soyChu)
+            nex = driver.find_element(By.CLASS_NAME, 'button_next._addBothBuddy')
+            nex.click()
+            driver.close()
+        driver.switch_to.window(driver.window_handles[-1])
 
 # soyChu_straw
 straws = []
@@ -92,6 +118,34 @@ for straw in straws:
         if cnt_soy != len(soy_windows):
             driver.close()
         cnt_soy += 1
+
+# SoyChu_soy_stop
+cnt_soy = 1
+soy_windows = driver.window_handles
+for soy_window in soy_windows:
+    driver.switch_to.window(soy_window)
+    time.sleep(0.5)
+    driver.switch_to.frame('mainFrame')
+    btn = driver.find_element(By.CLASS_NAME, 'btn_area')
+    if btn.text == '이웃추가':
+        btn.click()
+        time.sleep(2)
+        driver.switch_to.window(driver.window_handles[-1])
+        time.sleep(2)
+        each = driver.find_elements(By.TAG_NAME, 'label')[-1]  #
+        each.click()
+        nex = driver.find_element(By.CLASS_NAME, 'button_next._buddyAddNext')
+        nex.click()
+        time.sleep(2)
+        text_box = driver.find_element(By.TAG_NAME, 'textarea')
+        text_box.send_keys(cmt_soyChu)
+        nex = driver.find_element(By.CLASS_NAME, 'button_next._addBothBuddy')
+        nex.click()
+        driver.close()
+    driver.switch_to.window(soy_window)
+    if cnt_soy != len(soy_windows):
+        driver.close()
+    cnt_soy += 1
 
 # thatGul
 for groupId in [6, 1, 5]:
