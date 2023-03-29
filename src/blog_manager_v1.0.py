@@ -34,7 +34,7 @@ driver.find_element(By.CSS_SELECTOR, '.btn_login').click()
 time.sleep(5)
 
 # soyChu_trip
-for page in range(3):
+for page in range(15, 18):
     driver.get(f"https://section.blog.naver.com/ThemePost.naver?directoryNo=28&activeDirectorySeq=3&currentPage={page}")
     time.sleep(1)
     spans = driver.find_elements(By.CLASS_NAME, 'name_author')
@@ -63,7 +63,7 @@ for page in range(3):
 
 # soyChu_straw
 straws = []
-for page in range(10):
+for page in range(10, 20):
     driver.get(f"https://section.blog.naver.com/BlogHome.naver?directoryNo=0&currentPage={page}&groupId=0")
     time.sleep(1)
     spans = driver.find_elements(By.CLASS_NAME, 'reply')
@@ -147,9 +147,11 @@ for soy_window in soy_windows:
         driver.close()
     cnt_soy += 1
 
+groupid = [5]  # [6, 1, 5]
+page_range = range(8, 100)
 # thatGul
-for groupId in [6, 1, 5]:
-    for page in range(1, 100):
+for groupId in groupid:
+    for page in page_range:
         driver.get(f"https://section.blog.naver.com/BlogHome.naver?directoryNo=0&currentPage={page}&groupId={groupId}")
         time.sleep(1)
         gul_time = driver.find_element(By.CLASS_NAME, 'time')
