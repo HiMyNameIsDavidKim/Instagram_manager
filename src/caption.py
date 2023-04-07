@@ -1,4 +1,4 @@
-file_path = './data/베드로성당.txt'
+file_path = '../data/천사의다리.txt'
 file = open(file_path, "r", encoding='UTF8')
 data = file.read()
 captions = list(data.split('\n'))
@@ -24,5 +24,5 @@ for i in range(len(captions)):
 
 print(captions)
 
-with open(file_path[-4] + '.str', "w", encoding='UTF8') as f:
+with open(file_path[:-4] + '.str', "w", encoding='UTF8') as f:
     [f.write(f'{caption}\n') for caption in captions]

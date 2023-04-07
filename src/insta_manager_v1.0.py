@@ -16,7 +16,7 @@ class InstaManager(object):
         url_login = 'https://www.instagram.com/accounts/login/'
         url_tags = "https://www.instagram.com/explore/tags/"
         url_main = 'https://www.instagram.com/'
-        file_idpw = r"/Users/davidkim/security/insta_nir.txt"
+        file_idpw = r"/Users/davidkim/security/insta_lr.txt"
         file_tags = r"/Users/davidkim/security/insta_tags.txt"
         file_infl = r"/Users/davidkim/security/insta_infl.txt"
         file_unfl = r"/Users/davidkim/security/insta_unfl.txt"
@@ -351,10 +351,10 @@ class InstaManager(object):
 
 
 if __name__ == '__main__':
-    insta = InstaManager(TAGS=True,
-                         STORY=True,
-                         FEED=True,
-                         INFL=True,
-                         UNFLW=False,
+    insta = InstaManager(TAGS=False,
+                         STORY=False,
+                         FEED=False,
+                         INFL=False,
+                         UNFLW=True,
                          REPEAT=1)
     insta.process()
