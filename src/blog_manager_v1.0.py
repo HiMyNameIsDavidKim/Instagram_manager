@@ -96,37 +96,9 @@ for straw in straws:
         soy.send_keys(Keys.CONTROL +'\n')
         time.sleep(1)
     driver.close()
-    cnt_soy = 1  # You can run again from here.
-    soy_windows = driver.window_handles
-    for soy_window in soy_windows:
-        driver.switch_to.window(soy_window)
-        time.sleep(0.5)
-        driver.switch_to.frame('mainFrame')
-        btn = driver.find_element(By.CLASS_NAME, 'btn_area')
-        if btn.text == '이웃추가':
-            btn.click()
-            time.sleep(2)
-            driver.switch_to.window(driver.window_handles[-1])
-            time.sleep(2)
-            each = driver.find_elements(By.TAG_NAME, 'label')[-1]  #
-            each.click()
-            nex = driver.find_element(By.CLASS_NAME, 'button_next._buddyAddNext')
-            nex.click()
-            time.sleep(2)
-            text_box = driver.find_element(By.TAG_NAME, 'textarea')
-            text_box.send_keys(cmt_soyChu)
-            nex = driver.find_element(By.CLASS_NAME, 'button_next._addBothBuddy')
-            nex.click()
-            driver.close()
-            time.sleep(0.5)
-        driver.switch_to.window(soy_window)
-        if cnt_soy != len(soy_windows):
-            driver.close()
-            time.sleep(0.5)
-        cnt_soy += 1
     straws.pop(0)
 
-# SoyChu_soy_stop
+# SoyChu_soy_execute
 cnt_soy = 1
 soy_windows = driver.window_handles
 for soy_window in soy_windows:
@@ -156,7 +128,7 @@ for soy_window in soy_windows:
         time.sleep(0.5)
     cnt_soy += 1
 
-groupid = [8, 7, 6, 1, 5]  # [8, 7, 6, 1, 5]
+groupid = [9, 8, 7, 6, 1, 5]  # [9, 8, 7, 6, 1, 5]
 random.shuffle(groupid)
 pagerange = range(5, 15)
 # thatGul
@@ -190,7 +162,7 @@ for groupId in groupid:
             driver.switch_to.window(driver.window_handles[-1])
 
 # onlyGong
-groupid = [8, 7, 6, 1, 5]
+groupid = [9, 8, 7, 6, 1, 5]
 pagerange = range(1, 100)
 for groupId in groupid:
     for page in pagerange:

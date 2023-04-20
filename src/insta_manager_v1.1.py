@@ -81,7 +81,7 @@ while True:
         break
 
 
-num = 300
+num = 100
 # UnflwExcute
 cnt = 0
 for name in names:
