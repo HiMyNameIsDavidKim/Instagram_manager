@@ -95,7 +95,6 @@ for straw in straws:
     for soy in soys:
         soy.send_keys(Keys.CONTROL +'\n')
         time.sleep(1)
-    driver.close()
     straws.pop(0)
 
 # SoyChu_soy_execute

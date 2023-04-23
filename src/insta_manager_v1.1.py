@@ -7,8 +7,6 @@ from random import randrange
 from bs4 import BeautifulSoup
 from selenium.webdriver.support.wait import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
-import sys
-from datetime import datetime
 
 ''' Because of IG's security program, use it line by line. '''
 
@@ -24,16 +22,6 @@ click = driver.find_elements(By.TAG_NAME, 'input')
 click[0].send_keys(idd)
 click[1].send_keys(pw)
 click[1].send_keys(Keys.RETURN)
-driver.implicitly_wait(10)
-time.sleep(5)
-btn_later1 = driver.find_element(By.CLASS_NAME, '_acan._acao._acas')
-btn_later1.click()
-driver.implicitly_wait(10)
-time.sleep(3)
-btn_later2 = driver.find_element(By.CLASS_NAME, '_a9--._a9_1')
-btn_later2.click()
-driver.implicitly_wait(10)
-time.sleep(3)
 
 # UnflwChecker
 file = open("/Users/davidkim/security/insta_flwer.txt", "r", encoding='UTF8')
@@ -80,7 +68,6 @@ while True:
     if len(names) >= int(cnt_flwer):
         break
 
-
 num = 100
 # UnflwExcute
 cnt = 0
@@ -106,20 +93,43 @@ story = driver.find_elements(By.CLASS_NAME, '_aarf.x1e56ztr')[1]
 story.click()
 time.sleep(1)
 last_owner = ''
+cnt = 0
 for _ in range(num):
     now_owner = driver.find_element(By.CLASS_NAME, '_ac0l').text[:5]
     if last_owner != now_owner:
         like = driver.find_element(By.CLASS_NAME, '_abm0._abl_')
         like.click()
         last_owner = now_owner
+        cnt += 1
         time.sleep(1)
     next_story = driver.find_element(By.CLASS_NAME, '_9zm2')
     next_story.click()
     time.sleep(1)
-    if _ >= num-1:
-        body = driver.find_elements(By.TAG_NAME, 'body')
-        body[0].send_keys(Keys.ESCAPE)
+    if cnt > num:
+        driver.get('https://www.instagram.com/')
         time.sleep(3)
+
+num = 100
+# Feed
+driver.get('https://www.instagram.com/?variant=following')
+driver.implicitly_wait(10)
+time.sleep(1)
+body = driver.find_element(By.TAG_NAME, 'body')
+for _ in range(num//5):
+    body.send_keys(Keys.END)
+    time.sleep(5)
+    like_btns = driver.find_elements(By.CLASS_NAME, '_aamw')
+    cnt = 0
+    for like_btn in like_btns:
+        color = like_btn.find_element(By.TAG_NAME, 'svg')
+        color = color.value_of_css_property('color')
+        if color == 'rgba(142, 142, 142, 1)':
+            like_btn = like_btn.find_element(By.CLASS_NAME, '_abm0._abl_')
+            like_btn.click()
+            time.sleep(5)
+            cnt += 1
+        if cnt > 2:
+            break
 
 # Logout
 driver.get(f'https://www.instagram.com/{idd}')
