@@ -1,9 +1,12 @@
 # Flw List
 
-## Code
-* followers
-  * const username = "USER_NAME_HERE";
-  * let followers = [{ username: "", full_name: "" }];
+## Process
+* code
+```javascript 
+  const username = "USER_NAME_HERE";
+``` 
+```javascript
+let followers = [{ username: "", full_name: "" }];
 let followings = [{ username: "", full_name: "" }];
 let dontFollowMeBack = [{ username: "", full_name: "" }];
 let iDontFollowBack = [{ username: "", full_name: "" }];
@@ -117,5 +120,15 @@ iDontFollowBack = [];
     console.log({ err });
   }
 })();
-  * copy(followers)
-* 
+```
+* copy(followers)
+  * terminal, python
+  * ls = (paste)
+  * ls_flwer = []
+  * [ls_flwer.append(i["username"]) for i in ls]
+* copy(followings)
+  * terminal, python
+  * ls = (paste)
+  * ls_flwing = []
+  * [ls_flwing.append(i["username"]) for i in ls]
+  * unflw = list(set(ls_flwing) - set(ls_flwer))
