@@ -1,7 +1,7 @@
 # Flw List
 
 ## Process
-* code
+* chrome, javascript
 ```javascript 
   const username = "USER_NAME_HERE";
 ``` 
@@ -121,14 +121,18 @@ iDontFollowBack = [];
   }
 })();
 ```
-* copy(followers)
-  * terminal, python
+* chrome, javascript
+  * copy(followers)
+* terminal, python
   * ls = (paste)
   * ls_flwer = []
   * [ls_flwer.append(i["username"]) for i in ls]
-* copy(followings)
-  * terminal, python
+* chrome, javascript
+  * copy(followings)
+* terminal, python
   * ls = (paste)
   * ls_flwing = []
   * [ls_flwing.append(i["username"]) for i in ls]
+* terminal, python
   * unflw = list(set(ls_flwing) - set(ls_flwer))
+  * [print(i) for i in unflw]
